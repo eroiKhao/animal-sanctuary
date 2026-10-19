@@ -3,28 +3,26 @@
     ViewData["Title"] = "Species";
 }
 
-<h1>Species Directory</h1>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add New Species</a>
-</p>
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Species Directory</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add New Species
+    </a>
+</div>
+<p class="text-muted">Species are used to group animals in the catalog and in the filters.</p>
+
+<div class="row g-4">
 @foreach (var item in Model)
 {
-        <tr>
-            <td>@item.Name</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a><span> | </span>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a><span> | </span>
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+    <div class="col-md-3 col-sm-6">
+        <div class="card animal-card h-100 shadow-sm text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-collection display-6 text-success"></i>
+                <h5 class="card-title mt-3">@item.Name</h5>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm mt-2">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm mt-2">Delete</a>
+            </div>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+</div>

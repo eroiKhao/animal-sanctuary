@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<h1>About Us</h1>
+<p class="lead">Our mission is simple: every animal deserves a warm home and a loving family.</p>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title"><i class="bi bi-building text-success"></i> Our shelter</h4>
+                <p class="card-text">
+                    Animal Sanctuary is a non-profit shelter that takes care of homeless dogs, cats,
+                    rodents and birds. We provide the animals with medical treatment, vaccination,
+                    sterilization and daily care while they wait for a new family.
+                </p>
+                <p class="card-text mb-0">
+                    The shelter was founded by a group of volunteers and lives on donations.
+                    During the last year our team found families for more than a hundred animals.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title"><i class="bi bi-list-check text-success"></i> How adoption works</h4>
+                <p class="card-text mb-2"><strong>1.</strong> Choose an animal in the catalog whose status is "Available".</p>
+                <p class="card-text mb-2"><strong>2.</strong> Fill in the short application form on the animal's page.</p>
+                <p class="card-text mb-2"><strong>3.</strong> Visit the shelter, meet the animal and talk to our staff.</p>
+                <p class="card-text mb-0"><strong>4.</strong> Take your new friend home. Congratulations!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h4 mt-5 mb-3">Frequently asked questions</h2>
+<div class="accordion" id="faqAccordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                Is adoption really free?
+            </button>
+        </h2>
+        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                Yes. We do not sell animals. We only ask you to take good care of your new friend and,
+                if possible, support the shelter with food or a small donation.
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                Can I return the animal if it does not work out?
+            </button>
+        </h2>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                We kindly ask you to think carefully before adopting. But if circumstances change,
+                contact us - the animal can always come back to the shelter.
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                Are all animals vaccinated?
+            </button>
+        </h2>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                Every animal receives a veterinary check-up and vaccination on arrival.
+                The health status of each animal is shown in its catalog card.
+            </div>
+        </div>
+    </div>
+</div>

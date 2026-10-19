@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Support Us";
+}
+
+<h1>Support Us</h1>
+<p class="lead">You cannot adopt right now? There are many other ways to help our animals!</p>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title"><i class="bi bi-cash-coin text-success"></i> Financial donations</h4>
+                <p class="card-text">Money goes to food, veterinary treatment and shelter repairs.</p>
+                <p class="card-text small mb-1">IBAN: <code>UA00 0000 0000 0000 0000 0000 0000</code></p>
+                <p class="card-text small text-muted mb-0">Purpose of payment: "Charity - Animal Sanctuary".</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title"><i class="bi bi-basket text-success"></i> Needed supplies</h4>
+                <p class="card-text">You can bring these items directly to the shelter:</p>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Dry food</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Medicine</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Blankets</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Bowls</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Toys</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Cat litter</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">Leashes</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title"><i class="bi bi-people text-success"></i> Become a volunteer</h4>
+                <ul class="card-text mb-0 ps-3">
+                    <li>You must be over 16 years old.</li>
+                    <li>Volunteer visits take place every day except Sunday.</li>
+                    <li>Volunteers walk dogs, play with cats and help clean the cages.</li>
+                    <li>Call us in advance so we can expect you.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-5">
+    <a asp-controller="Home" asp-action="Contact" class="btn btn-primary btn-lg">
+        <i class="bi bi-envelope"></i> Contact the shelter
+    </a>
+</div>

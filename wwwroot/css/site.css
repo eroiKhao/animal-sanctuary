@@ -1,23 +1,98 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    background-color: #faf6f0;
+    color: #383d43;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
-  flex: 1 0 auto;
+    flex: 1 0 auto;
 }
 
-.footer {
-  padding: 1rem 0;
+h1, h2, h3, h4 {
+    color: #004207;
+}
+
+.shelter-navbar {
+    background-color: #21422e;
+}
+
+.shelter-navbar .nav-link:hover {
+    color: #ffd166;
+}
+
+.shelter-footer {
+    background-color: #2f5d46;
+    color: #e8f0ea;
+    flex-shrink: 0;
+}
+
+.btn-primary {
+    --bs-btn-bg: #3e7c59;
+    --bs-btn-border-color: #3e7c59;
+    --bs-btn-hover-bg: #356b4d;
+    --bs-btn-hover-border-color: #2f5d46;
+    --bs-btn-active-bg: #2f5d46;
+    --bs-btn-active-border-color: #2f5d46;
+}
+
+.hero {
+    background: linear-gradient(135deg, #3e7c59 0%, #6fae8a 100%);
+    color: #ffffff;
+    padding: 4rem 2rem;
+    border-radius: 1rem;
+}
+
+.hero .btn-warning {
+    background-color: #ffd166;
+    border-color: #ffd166;
+    color: #5a4500;
+}
+
+.hero .btn-warning:hover {
+    background-color: #ffca4f;
+    border-color: #ffca4f;
+}
+
+.animal-card {
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.animal-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12) !important;
+}
+
+.animal-card .animal-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.badge-available {
+    background-color: #3e7c59;
+}
+
+.badge-reserved {
+    background-color: #f0a04b;
+}
+
+.badge-adopted {
+    background-color: #8a8f98;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 14px;
+    background-color: #ffffff;
+}
+
+.stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3e7c59;
 }

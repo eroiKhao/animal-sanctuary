@@ -3,45 +3,54 @@
     ViewData["Title"] = "Animal Catalog";
 }
 
-<h1>Animal Catalog</h1>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add New Animal</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Animal Catalog</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add New Animal
+    </a>
+</div>
+<p class="text-muted">
+    <i class="bi bi-heart-fill text-danger"></i>
+    @Model.Count(a => a.Status == "Available") animals are currently looking for a home.
 </p>
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>Photo</th>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>Species</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+
+<div class="row g-4">
 @foreach (var item in Model)
 {
-        <tr>
-            <td>
-                <img src="@(item.PhotoUrl ?? "/images/animals/paw.svg")" alt="@item.Name"
-                     style="width:70px;height:56px;object-fit:cover;border-radius:8px;" />
-            </td>
-            <td>@item.Name</td>
-            <td>@item.Species?.Name</td>
-            <td>@item.AgeYears yr. (@item.AgeMonths mo.)</td>
-            <td>@item.Gender</td>
-            <td>
-                <span class="badge @(item.Status == "Available" ? "bg-success" : item.Status == "Reserved" ? "bg-warning text-dark" : "bg-secondary")">
-                    @item.Status
-                </span>
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a><span> | </span>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a><span> | </span>
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+    var badgeClass = item.Status == "Available" ? "badge-available"
+                   : item.Status == "Reserved" ? "badge-reserved"
+                   : "badge-adopted";
+
+    <div class="col-md-4 col-sm-6">
+        <div class="card animal-card h-100 shadow-sm">
+            <img src="@(item.PhotoUrl ?? "/images/animals/paw.svg")" alt="@item.Name" class="animal-photo"
+                 onerror="this.onerror=null;this.src='/images/animals/paw.svg';" />
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">@item.Name</h5>
+                    <span class="badge @badgeClass">@item.Status</span>
+                </div>
+                <p class="text-muted mb-1 mt-2">
+                    <i class="bi bi-tag"></i> @item.Species?.Name
+                    @if (!string.IsNullOrEmpty(item.Breed))
+                    {
+                        <span>&middot; @item.Breed</span>
+                    }
+                </p>
+                <p class="mb-3">
+                    <i class="bi bi-balloon"></i> @item.AgeYears yr.
+                    <span class="mx-1">&middot;</span>
+                    <i class="bi bi-gender-ambiguous"></i> @item.Gender
+                    <span class="mx-1">&middot;</span>
+                    <i class="bi bi-heart-pulse"></i> @item.HealthStatus
+                </p>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+                    <i class="bi bi-eye"></i> Details
+                </a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+            </div>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+</div>

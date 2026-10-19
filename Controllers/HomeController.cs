@@ -6,14 +6,32 @@ namespace AnimalSanctuary.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
+        {
+            ViewBag.TotalAnimals = _context.Animals.Count();
+            ViewBag.AvailableAnimals = _context.Animals.Count(a => a.Status == "Available");
+            ViewBag.AdoptedAnimals = _context.Animals.Count(a => a.Status == "Adopted");
+            ViewBag.SpeciesCount = _context.Species.Count();
+
+            return View();
+        }
+        public IActionResult SupportUs()
+        {
+            return View();
+        }
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
         {
             return View();
         }

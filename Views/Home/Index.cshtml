@@ -2,11 +2,73 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center mt-5">
-    <h1 class="display-4">Welcome to Animal Sanctuary</h1>
-    <p class="lead">An information system for a homeless animal shelter.</p>
-    <p>
-        This project manages the catalog of shelter animals:
-        <a asp-controller="Animals" asp-action="Index">open the animal catalog</a>.
-    </p>
+<div class="hero text-center mb-5">
+    <h1 class="display-5 fw-bold">Welcome to Animal Sanctuary</h1>
+    <p class="lead mb-4">We help homeless animals find loving families.<br />
+        Browse our catalog, fall in love, and give a paw a new home.</p>
+    <a asp-controller="Animals" asp-action="Index" class="btn btn-warning btn-lg me-2">
+        <i class="bi bi-search-heart"></i> Find a Friend
+    </a>
+    <a asp-controller="Home" asp-action="SupportUs" class="btn btn-outline-light btn-lg">
+        <i class="bi bi-heart"></i> Support Us
+    </a>
+</div>
+
+<h2 class="h4 mb-3">Our shelter in numbers</h2>
+<div class="row g-3 mb-5">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card shadow-sm text-center py-3">
+            <div class="stat-number">@ViewBag.TotalAnimals</div>
+            <div class="text-muted">animals in the shelter</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card shadow-sm text-center py-3">
+            <div class="stat-number">@ViewBag.AvailableAnimals</div>
+            <div class="text-muted">looking for a home</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card shadow-sm text-center py-3">
+            <div class="stat-number">@ViewBag.AdoptedAnimals</div>
+            <div class="text-muted">already adopted</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card shadow-sm text-center py-3">
+            <div class="stat-number">@ViewBag.SpeciesCount</div>
+            <div class="text-muted">species in the catalog</div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h4 mb-3">How can you help?</h2>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-house-heart display-6 text-success"></i>
+                <h5 class="card-title mt-2">Adopt</h5>
+                <p class="card-text text-muted">Open an animal profile and submit an application to give it a family.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-people display-6 text-success"></i>
+                <h5 class="card-title mt-2">Volunteer</h5>
+                <p class="card-text text-muted">Visit the shelter, walk the dogs and help us take care of the animals.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-box2-heart display-6 text-success"></i>
+                <h5 class="card-title mt-2">Donate</h5>
+                <p class="card-text text-muted">Food, medicine and blankets - every little bit helps our animals.</p>
+            </div>
+        </div>
+    </div>
 </div>
