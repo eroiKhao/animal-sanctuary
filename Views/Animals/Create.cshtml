@@ -1,0 +1,84 @@
+@model AnimalSanctuary.Models.Animal
+@{
+    ViewData["Title"] = "Add New Animal";
+}
+
+<h1>Add New Animal</h1>
+<h4>Animal card</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SpeciesId" class="form-label"></label>
+                <select asp-for="SpeciesId" class="form-select" asp-items="ViewBag.SpeciesId">
+                    <option value="">-- Select species --</option>
+                </select>
+                <span asp-validation-for="SpeciesId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Breed" class="form-label"></label>
+                <input asp-for="Breed" class="form-control" />
+                <span asp-validation-for="Breed" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AgeMonths" class="form-label"></label>
+                <input asp-for="AgeMonths" class="form-control" type="number" />
+                <span asp-validation-for="AgeMonths" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Gender" class="form-label"></label>
+                <select asp-for="Gender" class="form-select" asp-items="ViewBag.Gender">
+                    <option value="">-- Select gender --</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HealthStatus" class="form-label"></label>
+                <select asp-for="HealthStatus" class="form-select" asp-items="ViewBag.HealthStatus">
+                    <option value="">-- Select health status --</option>
+                </select>
+                <span asp-validation-for="HealthStatus" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="ViewBag.Status">
+                    <option value="">-- Select status --</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhotoUrl" class="form-label"></label>
+                <input asp-for="PhotoUrl" class="form-control" placeholder="/images/animals/paw.svg or a full URL" />
+                <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to Catalog</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

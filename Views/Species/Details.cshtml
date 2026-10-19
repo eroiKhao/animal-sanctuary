@@ -1,0 +1,22 @@
+@model AnimalSanctuary.Models.Species
+@{
+    ViewData["Title"] = "Species Details";
+}
+
+<h1>Species Details</h1>
+<div>
+    <h4>Species</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

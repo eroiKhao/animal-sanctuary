@@ -1,0 +1,69 @@
+@model AnimalSanctuary.Models.Animal
+@{
+    ViewData["Title"] = "Animal Details";
+}
+
+<h1>Animal Details</h1>
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Photo</dt>
+        <dd class="col-sm-9">
+            <img src="@(Model.PhotoUrl ?? "/images/animals/paw.svg")" alt="@Model.Name"
+                 style="width:260px;height:200px;object-fit:cover;border-radius:12px;" />
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">Species</dt>
+        <dd class="col-sm-9">@Model.Species?.Name</dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Breed)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Breed)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.AgeMonths)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.AgeYears yr. (@Model.AgeMonths mo.)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.HealthStatus)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.HealthStatus)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-9">
+            <span class="badge @(Model.Status == "Available" ? "bg-success" : Model.Status == "Reserved" ? "bg-warning text-dark" : "bg-secondary")">
+                @Model.Status
+            </span>
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-3">Added on</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd.MM.yyyy")</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to Catalog</a>
+</div>
