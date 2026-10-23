@@ -10,6 +10,7 @@
         public int AgeMonths { get; set; }
         public string Gender { get; set; } = string.Empty;
         public string HealthStatus { get; set; } = string.Empty;
+        public bool IsSterilized { get; set; }
         public string Status { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string? PhotoUrl { get; set; }

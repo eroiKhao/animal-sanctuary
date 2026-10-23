@@ -1,0 +1,76 @@
+    @model AnimalSanctuary.Models.AdoptionRequest
+@{
+    ViewData["Title"] = "Submit an Application";
+    var animal = (AnimalSanctuary.Models.Animal)ViewBag.Animal;
+}
+
+<h1>Application for @animal.Name</h1>
+<p class="text-muted">
+    Fill in the questionnaire and our manager will contact you.
+</p>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AnimalId" />
+
+            <div class="mb-3">
+                <label asp-for="ApplicantName" class="form-label"></label>
+                <input asp-for="ApplicantName" class="form-control" placeholder="Your first and last name" />
+                <span asp-validation-for="ApplicantName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RequestType" class="form-label"></label>
+                <select asp-for="RequestType" class="form-select">
+                    <option>Adoption</option>
+                    <option>Visit</option>
+                </select>
+                <span asp-validation-for="RequestType" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="+380 __ ___ __ __" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HousingType" class="form-label"></label>
+                <select asp-for="HousingType" class="form-select">
+                    <option>Apartment</option>
+                    <option>House</option>
+                </select>
+                <span asp-validation-for="HousingType" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="HasOtherPets" class="form-check-input" />
+                <label asp-for="HasOtherPets" class="form-check-label"></label>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PreferredVisitDate" class="form-label"></label>
+                <input asp-for="PreferredVisitDate" type="date" class="form-control" />
+                <span asp-validation-for="PreferredVisitDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ApplicantComment" class="form-label"></label>
+                <textarea asp-for="ApplicantComment" class="form-control" rows="3"
+                          placeholder="Anything you would like to tell us (optional)"></textarea>
+                <span asp-validation-for="ApplicantComment" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-send"></i> Submit Application
+            </button>
+            <a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

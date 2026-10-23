@@ -11,15 +11,19 @@
 </div>
 <p class="text-muted">
     <i class="bi bi-heart-fill text-danger"></i>
-    @Model.Count(a => a.Status == "Available") animals are currently looking for a home.
+    Found @Model.Count() animal(s), @Model.Count(a => a.Status == "Available") of them available.
 </p>
 
 <div class="row g-4">
+@{
+    var favoriteIds = ViewBag.FavoriteIds as HashSet<int>;
+}
 @foreach (var item in Model)
 {
     var badgeClass = item.Status == "Available" ? "badge-available"
                    : item.Status == "Reserved" ? "badge-reserved"
                    : "badge-adopted";
+    var isFavorite = favoriteIds != null && favoriteIds.Contains(item.Id);
 
     <div class="col-md-4 col-sm-6">
         <div class="card animal-card h-100 shadow-sm">
@@ -43,12 +47,30 @@
                     <i class="bi bi-gender-ambiguous"></i> @item.Gender
                     <span class="mx-1">&middot;</span>
                     <i class="bi bi-heart-pulse"></i> @item.HealthStatus
+                    @if (item.IsSterilized)
+                    {
+                        <span class="mx-1">&middot;</span>
+                        <span class="text-success"><i class="bi bi-patch-check"></i> Sterilized</span>
+                    }
                 </p>
                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
                     <i class="bi bi-eye"></i> Details
                 </a>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+
+                <form asp-controller="Favorites" asp-action="Toggle" method="post" class="d-inline">
+                    <input type="hidden" name="animalId" value="@item.Id" />
+                    <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                    <button type="submit" class="btn @(isFavorite ? "btn-danger" : "btn-outline-danger") btn-sm"
+                            title="@(isFavorite ? "Remove from favourites" : "Add to favourites")">
+                        <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i>
+                    </button>
+                </form>
+                <a asp-controller="AdoptionRequests" asp-action="Create" asp-route-animalId="@item.Id"
+                   class="btn btn-outline-success btn-sm" title="Submit an application">
+                    <i class="bi bi-file-earmark-text"></i> Apply
+                </a>
             </div>
         </div>
     </div>

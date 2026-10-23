@@ -14,13 +14,61 @@ namespace AnimalSanctuary.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchString, int? speciesFilter,
+            string genderFilter, string healthFilter, string sortOrder)
         {
-            var animals = _context.Animals
-                .Include(a => a.Species)
-                .ToList();
+            ViewData["SearchString"] = searchString;
+            ViewData["SpeciesFilter"] = speciesFilter;
+            ViewData["GenderFilter"] = genderFilter;
+            ViewData["HealthFilter"] = healthFilter;
 
-            return View(animals);
+            var animals = _context.Animals.Include(a => a.Species).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                animals = animals.Where(a => a.Name.Contains(searchString)
+                                          || a.Description.Contains(searchString));
+            }
+
+            if (speciesFilter.HasValue && speciesFilter.Value > 0)
+            {
+                animals = animals.Where(a => a.SpeciesId == speciesFilter.Value);
+            }
+
+            if (!string.IsNullOrEmpty(genderFilter))
+            {
+                animals = animals.Where(a => a.Gender == genderFilter);
+            }
+
+            if (!string.IsNullOrEmpty(healthFilter))
+            {
+                animals = animals.Where(a => a.HealthStatus == healthFilter);
+            }
+
+            switch (sortOrder)
+            {
+                case "name":
+                    animals = animals.OrderBy(a => a.Name);
+                    break;
+                case "age":
+                    animals = animals.OrderBy(a => a.AgeMonths);
+                    break;
+                default:
+                    animals = animals.OrderByDescending(a => a.CreatedAt);
+                    break;
+            }
+
+            ViewBag.SpeciesList = new SelectList(_context.Species, "Id", "Name", speciesFilter);
+
+            var visitorKey = HttpContext.Session.GetString(FavoritesController.VisitorKeySession);
+            ViewBag.FavoriteIds = visitorKey == null
+                ? new HashSet<int>()
+                : _context.Favorites
+                    .Where(f => f.VisitorKey == visitorKey)
+                    .Select(f => f.AnimalId)
+                    .ToHashSet();
+
+            return View(animals.ToList());
         }
 
         public IActionResult Details(int? id)
@@ -38,6 +86,10 @@ namespace AnimalSanctuary.Controllers
             {
                 return NotFound();
             }
+
+            var visitorKey = HttpContext.Session.GetString(FavoritesController.VisitorKeySession);
+            ViewBag.IsFavorite = visitorKey != null &&
+                _context.Favorites.Any(f => f.VisitorKey == visitorKey && f.AnimalId == animal.Id);
 
             return View(animal);
         }
