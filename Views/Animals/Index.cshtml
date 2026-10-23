@@ -9,6 +9,55 @@
         <i class="bi bi-plus-circle"></i> Add New Animal
     </a>
 </div>
+
+<form asp-action="Index" method="get" class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label mb-1">Search</label>
+                <input type="text" name="searchString" value="@ViewData["SearchString"]"
+                       class="form-control" placeholder="Name or description..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1">Species</label>
+                <select name="speciesFilter" class="form-select" asp-items="ViewBag.SpeciesList">
+                    <option value="">All species</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1">Gender</label>
+                <select name="genderFilter" class="form-select">
+                    <option value="">All</option>
+                    <option value="Male" selected="@(ViewData["GenderFilter"]?.ToString() == "Male")">Male</option>
+                    <option value="Female" selected="@(ViewData["GenderFilter"]?.ToString() == "Female")">Female</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1">Health</label>
+                <select name="healthFilter" class="form-select">
+                    <option value="">All</option>
+                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Healthy")">Healthy</option>
+                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Under Treatment")">Under Treatment</option>
+                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Recovered")">Recovered</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </div>
+
+        <div class="mt-2 small">
+            Sort by:
+            <a asp-action="Index" asp-route-sortOrder="">Newest first</a><span> &middot; </span>
+            <a asp-action="Index" asp-route-sortOrder="name">Name</a><span> &middot; </span>
+            <a asp-action="Index" asp-route-sortOrder="age">Youngest first</a>
+        </div>
+    </div>
+</form>
+
 <p class="text-muted">
     <i class="bi bi-heart-fill text-danger"></i>
     Found @Model.Count() animal(s), @Model.Count(a => a.Status == "Available") of them available.
