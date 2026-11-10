@@ -1,39 +1,49 @@
 @model AnimalSanctuary.Models.Animal
 @{
-    ViewData["Title"] = "Delete Animal";
+    ViewData["Title"] = "Delete " + Model.Name;
+    var badgeClass = Model.Status == "Available" ? "badge-available"
+                   : Model.Status == "Reserved" ? "badge-reserved"
+                   : "badge-adopted";
 }
 
-<h1>Delete Animal</h1>
-<h3>Are you sure you want to delete this animal?</h3>
-<div>
-    <h4>@Model.Name</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-3">Species</dt>
-        <dd class="col-sm-9">@Model.Species?.Name</dd>
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Breed)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Breed)
-        </dd>
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-trash"></i></div>
+    <div>
+        <h1>Delete "@Model.Name"</h1>
+        <p class="page-subtitle">Are you sure you want to remove this animal from the catalog?</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Index" class="btn btn-ghost"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
+    </div>
+</div>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-action="Index" class="btn btn-secondary">Back to Catalog</a>
-    </form>
+<div class="row">
+    <div class="col-lg-7">
+        <div class="panel">
+            <div class="alert alert-danger d-flex align-items-center gap-2">
+                <i class="bi bi-exclamation-triangle"></i> This action cannot be undone.
+            </div>
+
+            <dl class="row details-dl mb-4">
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">@Model.Name</dd>
+                <dt class="col-sm-4">Species</dt>
+                <dd class="col-sm-8">@Model.Species?.Name</dd>
+                <dt class="col-sm-4">Breed</dt>
+                <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Breed) ? "-" : Model.Breed)</dd>
+                <dt class="col-sm-4">Age</dt>
+                <dd class="col-sm-8">@Model.AgeYears yr. (@Model.AgeMonths mo.)</dd>
+                <dt class="col-sm-4">Status</dt>
+                <dd class="col-sm-8"><span class="badge badge-soft @badgeClass">@Model.Status</span></dd>
+            </dl>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-soft-danger px-4"><i class="bi bi-trash me-1"></i> Delete</button>
+                    <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

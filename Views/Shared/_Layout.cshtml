@@ -10,70 +10,139 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-md navbar-dark shelter-navbar">
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-light app-navbar">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/favicon.svg" alt="" width="30" height="30" />
+                    <img src="~/images/favicon.svg" alt="" width="28" height="28" />
                     <span>Animal Sanctuary</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-md-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Animals" asp-action="Index">
-                                <i class="bi bi-grid-3x3-gap"></i> Catalog
-                            </a>
+                            <a class="nav-link" href="/#catalog"><i class="bi bi-grid-3x3-gap me-1"></i> Catalog</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Species" asp-action="Index">
-                                <i class="bi bi-tags"></i> Species
-                            </a>
+                            <a class="nav-link" asp-controller="Home" asp-action="About"><i class="bi bi-info-circle me-1"></i> About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Favorites" asp-action="Index">
-                                <i class="bi bi-heart-fill"></i> Favourites
-                            </a>
+                            <a class="nav-link" asp-controller="Home" asp-action="SupportUs"><i class="bi bi-heart me-1"></i> Support Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="AdoptionRequests" asp-action="Index">
-                                <i class="bi bi-file-earmark-text"></i> Applications
-                            </a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Contact"><i class="bi bi-envelope me-1"></i> Contact</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="About">
-                                <i class="bi bi-info-circle"></i> About Us
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="SupportUs">
-                                <i class="bi bi-heart"></i> Support Us
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contact">
-                                <i class="bi bi-envelope"></i> Contact
-                            </a>
-                        </li>
+                    </ul>
+                    <ul class="navbar-nav align-items-lg-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Favorites" asp-action="Index" title="My Favorites">
+                                    <i class="bi bi-heart-fill me-1"></i> Favorites
+                                </a>
+                            </li>
+
+                            @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-speedometer2 me-1"></i> Manager Panel
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" asp-controller="Animals" asp-action="Index"><i class="bi bi-table me-2"></i>Animal Cards</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Species" asp-action="Index"><i class="bi bi-tags me-2"></i>Species Directory</a></li>
+                                        <li><a class="dropdown-item" asp-controller="AdoptionRequests" asp-action="Manage"><i class="bi bi-inbox me-2"></i>Applications</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Users" asp-action="Index"><i class="bi bi-people me-1"></i> Users</a>
+                                </li>
+                            }
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-1"></i> @User.Identity?.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><span class="dropdown-item-text small text-muted">Signed in as <b>@User.Identity?.Name</b></span></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AdoptionRequests" asp-action="MyApplications">
+                                            <i class="bi bi-file-earmark-text me-2"></i>My Applications
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-taupe btn-sm px-3" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - AnimalSanctuary - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <main role="main" class="flex-grow-1 pt-4">
+        @if (TempData["RequestSuccess"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["RequestSuccess"]
+                </div>
+            </div>
+        }
+        @if (TempData["RequestError"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> @TempData["RequestError"]
+                </div>
+            </div>
+        }
+        @if (TempData["UsersError"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-shield-exclamation"></i> @TempData["UsersError"]
+                </div>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="app-footer mt-auto">
+        <div class="container py-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6">
+                    <p class="footer-title mb-1"><i class="bi bi-heart-fill me-1"></i>Animal Sanctuary</p>
+                    <p class="mb-0 small opacity-75">A shelter where every paw matters.</p>
+                </div>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,0 +1,63 @@
+@model AnimalSanctuary.Controllers.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="auth-icon"><i class="bi bi-person-plus"></i></div>
+        <h1 class="h4 mb-1">Create your account</h1>
+        <p class="text-muted small mb-4">Join our shelter community - it takes less than a minute.</p>
+
+        <form asp-action="Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label asp-for="FirstName" class="form-label">First name</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-6 mb-3">
+                    <label asp-for="LastName" class="form-label">Last name</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label">Phone number</label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="+380..." />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-taupe w-100 py-2"><i class="bi bi-person-plus me-1"></i> Register</button>
+        </form>
+
+        <p class="text-muted small mt-4 mb-0 text-center">
+            Already have an account? <a asp-action="Login">Sign in here</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

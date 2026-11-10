@@ -1,0 +1,52 @@
+@model AnimalSanctuary.Controllers.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="auth-icon"><i class="bi bi-box-arrow-in-right"></i></div>
+        <h1 class="h4 mb-1">Welcome back</h1>
+        <p class="text-muted small mb-4">Sign in to save favorites and submit applications.</p>
+
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-taupe w-100 py-2"><i class="bi bi-box-arrow-in-right me-1"></i> Login</button>
+        </form>
+
+        <p class="text-muted small mt-4 mb-0 text-center">
+            No account yet?
+            <a asp-action="Register">Create one here</a>
+        </p>
+    </div>
+
+    <div class="panel mt-3 small text-muted">
+        <b>Demo accounts:</b><br />
+        Administrator: admin@shelter.com / Admin123!<br />
+        Manager: manager@shelter.com / Manager123!<br />
+        User: user@shelter.com / User123!
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

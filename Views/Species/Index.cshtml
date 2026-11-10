@@ -1,28 +1,68 @@
 @model IEnumerable<AnimalSanctuary.Models.Species>
 @{
-    ViewData["Title"] = "Species";
+    ViewData["Title"] = "Species Directory";
+    bool isStaff = User.IsInRole("Manager") || User.IsInRole("Administrator");
+    var counts = (Dictionary<int, int>)ViewBag.AnimalCounts;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="mb-0">Species Directory</h1>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Add New Species
-    </a>
-</div>
-<p class="text-muted">Species are used to group animals in the catalog and in the filters.</p>
-
-<div class="row g-4">
-@foreach (var item in Model)
-{
-    <div class="col-md-3 col-sm-6">
-        <div class="card animal-card h-100 shadow-sm text-center">
-            <div class="card-body py-4">
-                <i class="bi bi-collection display-6 text-success"></i>
-                <h5 class="card-title mt-3">@item.Name</h5>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm mt-2">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm mt-2">Delete</a>
-            </div>
-        </div>
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-tags"></i></div>
+    <div>
+        <h1>Species Directory</h1>
+        <p class="page-subtitle">Species are used to group animals in the catalog and in the filters</p>
     </div>
-}
+    <div class="page-actions">
+        @if (isStaff)
+        {
+            <a asp-action="Create" class="btn btn-taupe"><i class="bi bi-plus-circle me-1"></i> Add New Species</a>
+        }
+    </div>
+</div>
+
+<div class="panel p-0">
+    <div class="table-responsive">
+        <table class="table table-modern align-middle">
+            <thead>
+                <tr>
+                    <th>Species name</th>
+                    <th>Animals in catalog</th>
+                    @if (isStaff)
+                    {
+                        <th class="text-end">Actions</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                counts.TryGetValue(item.Id, out int animalCount);
+                <tr>
+                    <td>
+                        <i class="bi bi-tag me-2 text-taupe"></i><span class="fw-bold">@item.Name</span>
+                    </td>
+                    <td>
+                        <a asp-controller="Home" asp-action="Index" asp-route-speciesFilter="@item.Id" asp-fragment="catalog"
+                           class="text-decoration-none">
+                            @animalCount animal(s) <i class="bi bi-box-arrow-up-right small ms-1"></i>
+                        </a>
+                    </td>
+                    @if (isStaff)
+                    {
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-ghost btn-sm" title="Details">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-ghost btn-sm" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-soft-danger btn-sm" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
