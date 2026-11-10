@@ -1,4 +1,5 @@
 using AnimalSanctuary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,10 @@ namespace AnimalSanctuary.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.AnimalCounts = _context.Animals
+                .GroupBy(a => a.SpeciesId)
+                .ToDictionary(g => g.Key, g => g.Count());
+
             return View(_context.Species.ToList());
         }
 
@@ -31,9 +36,14 @@ namespace AnimalSanctuary.Controllers
                 return NotFound();
             }
 
+            ViewBag.AnimalCounts = _context.Animals
+                .GroupBy(a => a.SpeciesId)
+                .ToDictionary(g => g.Key, g => g.Count());
+
             return View(species);
         }
 
+        [Authorize(Roles = "Manager,Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -41,6 +51,7 @@ namespace AnimalSanctuary.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager,Administrator")]
         public IActionResult Create(Species species)
         {
             if (ModelState.IsValid)
@@ -54,6 +65,7 @@ namespace AnimalSanctuary.Controllers
             return View(species);
         }
 
+        [Authorize(Roles = "Manager,Administrator")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -72,6 +84,7 @@ namespace AnimalSanctuary.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager,Administrator")]
         public IActionResult Edit(int id, Species species)
         {
             if (id != species.Id)
@@ -101,6 +114,7 @@ namespace AnimalSanctuary.Controllers
             return View(species);
         }
 
+        [Authorize(Roles = "Manager,Administrator")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -114,12 +128,17 @@ namespace AnimalSanctuary.Controllers
                 return NotFound();
             }
 
+            ViewBag.AnimalCounts = _context.Animals
+                .GroupBy(a => a.SpeciesId)
+                .ToDictionary(g => g.Key, g => g.Count());
+
             return View(species);
         }
 
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager,Administrator")]
         public IActionResult DeleteConfirmed(int id)
         {
             var species = _context.Species.Find(id);

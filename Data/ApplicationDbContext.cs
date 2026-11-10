@@ -1,7 +1,8 @@
 using AnimalSanctuary.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -23,17 +24,31 @@ using Microsoft.EntityFrameworkCore;
                 .HasForeignKey(a => a.SpeciesId);
 
             modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.User)
+                .WithMany()
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Favorite>()
                 .HasOne(f => f.Animal)
                 .WithMany()
-                .HasForeignKey(f => f.AnimalId);
-            
+                .HasForeignKey(f => f.AnimalId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Favorite>()
-                .HasIndex(f => new { f.AnimalId, f.VisitorKey })
+                .HasIndex(f => new { f.UserId, f.AnimalId })
                 .IsUnique();
-            
+
+            modelBuilder.Entity<AdoptionRequest>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<AdoptionRequest>()
                 .HasOne(r => r.Animal)
                 .WithMany()
-                .HasForeignKey(r => r.AnimalId);
+                .HasForeignKey(r => r.AnimalId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }

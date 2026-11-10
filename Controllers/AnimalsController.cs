@@ -1,10 +1,12 @@
 using AnimalSanctuary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalSanctuary.Controllers
 {
+    [Authorize(Roles = "Manager,Administrator")]
     public class AnimalsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -60,17 +62,10 @@ namespace AnimalSanctuary.Controllers
 
             ViewBag.SpeciesList = new SelectList(_context.Species, "Id", "Name", speciesFilter);
 
-            var visitorKey = HttpContext.Session.GetString(FavoritesController.VisitorKeySession);
-            ViewBag.FavoriteIds = visitorKey == null
-                ? new HashSet<int>()
-                : _context.Favorites
-                    .Where(f => f.VisitorKey == visitorKey)
-                    .Select(f => f.AnimalId)
-                    .ToHashSet();
-
             return View(animals.ToList());
         }
 
+        [AllowAnonymous]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -86,10 +81,6 @@ namespace AnimalSanctuary.Controllers
             {
                 return NotFound();
             }
-
-            var visitorKey = HttpContext.Session.GetString(FavoritesController.VisitorKeySession);
-            ViewBag.IsFavorite = visitorKey != null &&
-                _context.Favorites.Any(f => f.VisitorKey == visitorKey && f.AnimalId == animal.Id);
 
             return View(animal);
         }

@@ -1,85 +1,67 @@
 using AnimalSanctuary.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalSanctuary.Controllers
 {
+    [Authorize]
     public class FavoritesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public FavoritesController(ApplicationDbContext context)
+        public FavoritesController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public const string VisitorKeySession = "VisitorKey";
-
-        private string GetOrCreateVisitorKey()
+        public async Task<IActionResult> Index()
         {
-            var key = HttpContext.Session.GetString(VisitorKeySession);
+            var userId = _userManager.GetUserId(User);
 
-            if (string.IsNullOrEmpty(key))
-            {
-                key = Guid.NewGuid().ToString("N");
-                HttpContext.Session.SetString(VisitorKeySession, key);
-            }
-
-            return key;
-        }
-
-        public IActionResult Index()
-        {
-            var key = GetOrCreateVisitorKey();
-
-            var favorites = _context.Favorites
-                .Include(f => f.Animal)
-                    .ThenInclude(a => a!.Species)
-                .Where(f => f.VisitorKey == key)
-                .OrderByDescending(f => f.CreatedAt)
-                .ToList();
+            var favorites = await _context.Favorites
+                .Include(f => f.Animal).ThenInclude(a => a!.Species)
+                .Where(f => f.UserId == userId)
+                .OrderByDescending(f => f.AddedAt)
+                .ToListAsync();
 
             return View(favorites);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Toggle(int animalId, string? returnUrl)
+        public async Task<IActionResult> Toggle(int animalId, string? returnUrl = null)
         {
-            var animal = _context.Animals.Find(animalId);
-            if (animal == null)
-            {
-                return NotFound();
-            }
+            var userId = _userManager.GetUserId(User);
 
-            var key = GetOrCreateVisitorKey();
-            var existing = _context.Favorites
-                .FirstOrDefault(f => f.AnimalId == animalId && f.VisitorKey == key);
+            var existing = await _context.Favorites
+                .FirstOrDefaultAsync(f => f.UserId == userId && f.AnimalId == animalId);
 
-            if (existing == null)
+            if (existing != null)
             {
-                _context.Favorites.Add(new Favorite
-                {
-                    AnimalId = animalId,
-                    VisitorKey = key,
-                    CreatedAt = DateTime.Now
-                });
-                TempData["FavoriteMessage"] = $"{animal.Name} was added to your favourites.";
+                _context.Favorites.Remove(existing);
             }
             else
             {
-                _context.Favorites.Remove(existing);
-                TempData["FavoriteMessage"] = $"{animal.Name} was removed from your favourites.";
+                _context.Favorites.Add(new Favorite
+                {
+                    UserId = userId!,
+                    AnimalId = animalId,
+                    AddedAt = DateTime.Now
+                });
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
-                return RedirectToAction(nameof(Index));
+                return Redirect(returnUrl);
             }
-
-            return Redirect(returnUrl);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
