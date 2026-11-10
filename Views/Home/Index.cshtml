@@ -1,74 +1,155 @@
-﻿@{
+﻿@model IEnumerable<AnimalSanctuary.Models.Animal>
+@{
     ViewData["Title"] = "Home Page";
+    bool isStaff = User.IsInRole("Manager") || User.IsInRole("Administrator");
 }
 
-<div class="hero text-center mb-5">
-    <h1 class="display-5 fw-bold">Welcome to Animal Sanctuary</h1>
-    <p class="lead mb-4">We help homeless animals find loving families.<br />
-        Browse our catalog, fall in love, and give a paw a new home.</p>
-    <a asp-controller="Animals" asp-action="Index" class="btn btn-warning btn-lg me-2">
-        <i class="bi bi-search-heart"></i> Find a Friend
-    </a>
-    <a asp-controller="Home" asp-action="SupportUs" class="btn btn-outline-light btn-lg">
-        <i class="bi bi-heart"></i> Support Us
-    </a>
-</div>
+<section class="hero">
+    <div class="container py-5">
+        <h1 class="mb-3">Every paw deserves<br />a loving home</h1>
+        <p class="lead mb-4">
+            We help homeless animals find new families. Browse our catalog,
+            save your favorites and submit an adoption application online.
+        </p>
+        <a href="#catalog" class="btn btn-taupe btn-lg me-2 px-4">
+            <i class="bi bi-search-heart me-1"></i> Find a Friend
+        </a>
+        <a asp-controller="Home" asp-action="SupportUs" class="btn btn-ghost btn-lg px-4">
+            <i class="bi bi-heart me-1"></i> Support Us
+        </a>
+    </div>
+</section>
 
-<h2 class="h4 mb-3">Our shelter in numbers</h2>
-<div class="row g-3 mb-5">
-    <div class="col-6 col-md-3">
-        <div class="card stat-card shadow-sm text-center py-3">
-            <div class="stat-number">@ViewBag.TotalAnimals</div>
-            <div class="text-muted">animals in the shelter</div>
+<section class="container py-5">
+    <div class="row g-3">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card text-center py-4 h-100">
+                <div class="stat-number">@ViewBag.TotalAnimals</div>
+                <div class="text-muted small">animals in the shelter</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card text-center py-4 h-100">
+                <div class="stat-number">@ViewBag.AvailableAnimals</div>
+                <div class="text-muted small">looking for a home</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card text-center py-4 h-100">
+                <div class="stat-number">@ViewBag.AdoptedAnimals</div>
+                <div class="text-muted small">already adopted</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card text-center py-4 h-100">
+                <div class="stat-number">@ViewBag.SpeciesCount</div>
+                <div class="text-muted small">species in the catalog</div>
+            </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="card stat-card shadow-sm text-center py-3">
-            <div class="stat-number">@ViewBag.AvailableAnimals</div>
-            <div class="text-muted">looking for a home</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card stat-card shadow-sm text-center py-3">
-            <div class="stat-number">@ViewBag.AdoptedAnimals</div>
-            <div class="text-muted">already adopted</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card stat-card shadow-sm text-center py-3">
-            <div class="stat-number">@ViewBag.SpeciesCount</div>
-            <div class="text-muted">species in the catalog</div>
-        </div>
-    </div>
-</div>
+</section>
 
-<h2 class="h4 mb-3">How can you help?</h2>
-<div class="row g-3">
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <i class="bi bi-house-heart display-6 text-success"></i>
-                <h5 class="card-title mt-2">Adopt</h5>
-                <p class="card-text text-muted">Open an animal profile and submit an application to give it a family.</p>
+<section id="catalog" class="container pb-5">
+    <div class="d-flex flex-wrap align-items-end justify-content-between mb-3">
+        <div>
+            <p class="section-kicker mb-1">Our catalog</p>
+            <h2 class="section-title mb-0">Meet our animals</h2>
+        </div>
+        @if (isStaff)
+        {
+            <a asp-controller="Animals" asp-action="Create" class="btn btn-taupe">
+                <i class="bi bi-plus-circle me-1"></i> Add New Animal
+            </a>
+        }
+    </div>
+
+    <form method="get" class="filter-bar" action="@Url.Action("Index", "Home")#catalog">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="searchString" value="@ViewData["SearchString"]"
+                       class="form-control" placeholder="Name or description..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Species</label>
+                <select name="speciesFilter" class="form-select" asp-items="ViewBag.SpeciesList">
+                    <option value="">All species</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Gender</label>
+                <select name="genderFilter" class="form-select">
+                    <option value="">All</option>
+                    <option value="Male" selected="@(ViewData["GenderFilter"]?.ToString() == "Male")">Male</option>
+                    <option value="Female" selected="@(ViewData["GenderFilter"]?.ToString() == "Female")">Female</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Health</label>
+                <select name="healthFilter" class="form-select">
+                    <option value="">All</option>
+                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Healthy")">Healthy</option>
+                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Under Treatment")">Under Treatment</option>
+                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Recovered")">Recovered</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-taupe flex-grow-1">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-ghost">Reset</a>
+            </div>
+        </div>
+
+        <div class="sort-links mt-2 small text-muted">
+            Sort by:
+            <a asp-controller="Home" asp-action="Index" asp-route-sortOrder="" asp-fragment="catalog"
+               class="@(string.IsNullOrEmpty(ViewData["SortOrder"]?.ToString()) ? "active" : "")">Newest first</a> &middot;
+            <a asp-controller="Home" asp-action="Index" asp-route-sortOrder="name" asp-fragment="catalog"
+               class="@(ViewData["SortOrder"]?.ToString() == "name" ? "active" : "")">Name</a> &middot;
+            <a asp-controller="Home" asp-action="Index" asp-route-sortOrder="age" asp-fragment="catalog"
+               class="@(ViewData["SortOrder"]?.ToString() == "age" ? "active" : "")">Youngest first</a>
+        </div>
+    </form>
+
+    <p class="text-muted small mb-3">
+        <i class="bi bi-heart-fill text-taupe"></i>
+        Found @Model.Count() animal(s), @Model.Count(a => a.Status == "Available") of them available.
+    </p>
+
+    <partial name="_AnimalCards" model="Model" />
+</section>
+
+<section class="container pb-5">
+    <p class="section-kicker mb-1">Support us</p>
+    <h2 class="section-title mb-4">How can you help?</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <div class="card-body p-4">
+                    <div class="feature-icon mb-3"><i class="bi bi-house-heart"></i></div>
+                    <h5 class="card-title">Adopt</h5>
+                    <p class="card-text text-muted small mb-0">Open an animal profile and submit an application to give it a family.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <div class="card-body p-4">
+                    <div class="feature-icon mb-3"><i class="bi bi-people"></i></div>
+                    <h5 class="card-title">Volunteer</h5>
+                    <p class="card-text text-muted small mb-0">Visit the shelter, walk the dogs and help us take care of the animals.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <div class="card-body p-4">
+                    <div class="feature-icon mb-3"><i class="bi bi-box2-heart"></i></div>
+                    <h5 class="card-title">Donate</h5>
+                    <p class="card-text text-muted small mb-0">Food, medicine and blankets - every little bit helps our animals.</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <i class="bi bi-people display-6 text-success"></i>
-                <h5 class="card-title mt-2">Volunteer</h5>
-                <p class="card-text text-muted">Visit the shelter, walk the dogs and help us take care of the animals.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <i class="bi bi-box2-heart display-6 text-success"></i>
-                <h5 class="card-title mt-2">Donate</h5>
-                <p class="card-text text-muted">Food, medicine and blankets - every little bit helps our animals.</p>
-            </div>
-        </div>
-    </div>
-</div>
+</section>

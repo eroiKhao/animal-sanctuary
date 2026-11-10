@@ -1,0 +1,79 @@
+@model IEnumerable<AnimalSanctuary.Models.Animal>
+@{
+    bool isStaff = User.IsInRole("Manager") || User.IsInRole("Administrator");
+    string returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<div class="row g-4">
+@foreach (var item in Model)
+{
+    var badgeClass = item.Status == "Available" ? "badge-available"
+                   : item.Status == "Reserved" ? "badge-reserved"
+                   : "badge-adopted";
+
+    <div class="col-sm-6 col-lg-4">
+        <div class="card animal-card h-100">
+            <div class="card-photo-wrap">
+                <img src="@(item.PhotoUrl ?? "/images/animals/paw.svg")" alt="@item.Name" class="animal-photo"
+                     onerror="this.onerror=null;this.src='/images/animals/paw.svg';" />
+                <span class="badge badge-soft badge-status @badgeClass">@item.Status</span>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    @* One click adds the animal to Favorites, the second click removes it *@
+                    <form asp-controller="Favorites" asp-action="Toggle" method="post">
+                        <input type="hidden" name="animalId" value="@item.Id" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <button type="submit" class="fav-btn" title="Add to / remove from Favorites">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                    </form>
+                }
+            </div>
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">@item.Name</h5>
+                    <span class="text-muted small"><i class="bi bi-tag"></i> @item.Species?.Name</span>
+                </div>
+                @if (!string.IsNullOrEmpty(item.Breed))
+                {
+                    <p class="text-muted small mb-2 mt-1">@item.Breed</p>
+                }
+                else
+                {
+                    <p class="mb-2 mt-1">&nbsp;</p>
+                }
+                <p class="small mb-3">
+                    <i class="bi bi-balloon"></i> @item.AgeYears yr.
+                    <span class="mx-1">&middot;</span>
+                    <i class="bi bi-gender-ambiguous"></i> @item.Gender
+                    <span class="mx-1">&middot;</span>
+                    <i class="bi bi-heart-pulse"></i> @item.HealthStatus
+                    @if (item.IsSterilized)
+                    {
+                        <span class="mx-1">&middot;</span>
+                        <i class="bi bi-patch-check text-taupe"></i> <span class="text-taupe">Sterilized</span>
+                    }
+                </p>
+                <div class="mt-auto d-flex gap-2">
+                    <a asp-controller="Animals" asp-action="Details" asp-route-id="@item.Id" class="btn btn-taupe btn-sm px-3">
+                        <i class="bi bi-eye me-1"></i> Details
+                    </a>
+                    @if (isStaff)
+                    {
+                        <a asp-controller="Animals" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-ghost btn-sm">Edit</a>
+                        <a asp-controller="Animals" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-soft-danger btn-sm">Delete</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <i class="bi bi-search"></i>
+        <p class="mt-2 mb-0">No animals match your search. Try other filters.</p>
+    </div>
+}

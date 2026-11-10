@@ -1,0 +1,83 @@
+@model List<AnimalSanctuary.Controllers.UserRowViewModel>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-people"></i></div>
+    <div>
+        <h1>User Management</h1>
+        <p class="page-subtitle">Assign or revoke the "Manager" role (Administrator only)</p>
+    </div>
+</div>
+
+<div class="panel p-0">
+    <div class="table-responsive">
+        <table class="table table-modern align-middle">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Registered</th>
+                    <th>Role</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var row in Model)
+            {
+                var user = row.User;
+                var isAdmin = row.IsAdministrator;
+                <tr>
+                    <td>
+                        <span class="fw-bold">@user.FirstName @user.LastName</span>
+                        <div class="text-muted small">@user.UserName</div>
+                    </td>
+                    <td class="small">@user.Email</td>
+                    <td class="small">@(string.IsNullOrEmpty(user.PhoneNumber) ? "-" : user.PhoneNumber)</td>
+                    <td class="text-muted small">@user.RegistrationDate.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        @if (isAdmin)
+                        {
+                            <span class="badge badge-soft badge-role">Administrator</span>
+                        }
+                        else if (row.IsManager)
+                        {
+                            <span class="badge badge-soft badge-approved">Manager</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-soft badge-adopted">User</span>
+                        }
+                    </td>
+                    <td class="text-end">
+                        @if (isAdmin)
+                        {
+                            <span class="text-muted small">protected</span>
+                        }
+                        else
+                        {
+                            <form asp-action="ToggleManager" method="post">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                @if (row.IsManager)
+                                {
+                                    <button type="submit" class="btn btn-soft-danger btn-sm">
+                                        <i class="bi bi-x-circle me-1"></i> Revoke Manager
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sage btn-sm">
+                                        <i class="bi bi-check2-circle me-1"></i> Make Manager
+                                    </button>
+                                }
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

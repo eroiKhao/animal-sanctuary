@@ -1,22 +1,36 @@
 @model AnimalSanctuary.Models.Species
 @{
     ViewData["Title"] = "Species Details";
+    var counts = (Dictionary<int, int>)ViewBag.AnimalCounts;
+    counts.TryGetValue(Model.Id, out int animalCount);
 }
 
-<h1>Species Details</h1>
-<div>
-    <h4>Species</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-tag"></i></div>
+    <div>
+        <h1>@Model.Name</h1>
+        <p class="page-subtitle">Species details</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Index" class="btn btn-ghost"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel">
+            <dl class="row details-dl mb-4">
+                <dt class="col-sm-4">Id</dt>
+                <dd class="col-sm-8">@Model.Id</dd>
+                <dt class="col-sm-4">Species name</dt>
+                <dd class="col-sm-8"><span class="fw-bold">@Model.Name</span></dd>
+                <dt class="col-sm-4">Animals</dt>
+                <dd class="col-sm-8">@animalCount animal(s)</dd>
+            </dl>
+            <a asp-controller="Home" asp-action="Index" asp-route-speciesFilter="@Model.Id" asp-fragment="catalog"
+               class="btn btn-taupe">
+                <i class="bi bi-grid-3x3-gap me-1"></i> Show in Catalog
+            </a>
+        </div>
+    </div>
 </div>

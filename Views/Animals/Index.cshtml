@@ -1,127 +1,134 @@
 @model IEnumerable<AnimalSanctuary.Models.Animal>
 @{
-    ViewData["Title"] = "Animal Catalog";
+    ViewData["Title"] = "Animal Cards";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="mb-0">Animal Catalog</h1>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Add New Animal
-    </a>
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-table"></i></div>
+    <div>
+        <h1>Animal Cards</h1>
+        <p class="page-subtitle">Manage the shelter catalog: @Model.Count() record(s)</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Create" class="btn btn-taupe"><i class="bi bi-plus-circle me-1"></i> Add New Animal</a>
+    </div>
 </div>
 
-<form asp-action="Index" method="get" class="card shadow-sm mb-3">
-    <div class="card-body">
-        <div class="row g-2 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label mb-1">Search</label>
-                <input type="text" name="searchString" value="@ViewData["SearchString"]"
-                       class="form-control" placeholder="Name or description..." />
-            </div>
-            <div class="col-md-2">
-                <label class="form-label mb-1">Species</label>
-                <select name="speciesFilter" class="form-select" asp-items="ViewBag.SpeciesList">
-                    <option value="">All species</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label mb-1">Gender</label>
-                <select name="genderFilter" class="form-select">
-                    <option value="">All</option>
-                    <option value="Male" selected="@(ViewData["GenderFilter"]?.ToString() == "Male")">Male</option>
-                    <option value="Female" selected="@(ViewData["GenderFilter"]?.ToString() == "Female")">Female</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label mb-1">Health</label>
-                <select name="healthFilter" class="form-select">
-                    <option value="">All</option>
-                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Healthy")">Healthy</option>
-                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Under Treatment")">Under Treatment</option>
-                    <option selected="@(ViewData["HealthFilter"]?.ToString() == "Recovered")">Recovered</option>
-                </select>
-            </div>
-            <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-primary flex-grow-1">
-                    <i class="bi bi-search"></i> Search
-                </button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
-            </div>
+<form asp-action="Index" method="get" class="filter-bar">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Search</label>
+            <input type="text" name="searchString" value="@ViewData["SearchString"]"
+                   class="form-control" placeholder="Name or description..." />
         </div>
-
-        <div class="mt-2 small">
-            Sort by:
-            <a asp-action="Index" asp-route-sortOrder="">Newest first</a><span> &middot; </span>
-            <a asp-action="Index" asp-route-sortOrder="name">Name</a><span> &middot; </span>
-            <a asp-action="Index" asp-route-sortOrder="age">Youngest first</a>
+        <div class="col-md-2">
+            <label class="form-label">Species</label>
+            <select name="speciesFilter" class="form-select" asp-items="ViewBag.SpeciesList">
+                <option value="">All species</option>
+            </select>
         </div>
+        <div class="col-md-2">
+            <label class="form-label">Gender</label>
+            <select name="genderFilter" class="form-select">
+                <option value="">All</option>
+                <option value="Male" selected="@(ViewData["GenderFilter"]?.ToString() == "Male")">Male</option>
+                <option value="Female" selected="@(ViewData["GenderFilter"]?.ToString() == "Female")">Female</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Health</label>
+            <select name="healthFilter" class="form-select">
+                <option value="">All</option>
+                <option selected="@(ViewData["HealthFilter"]?.ToString() == "Healthy")">Healthy</option>
+                <option selected="@(ViewData["HealthFilter"]?.ToString() == "Under Treatment")">Under Treatment</option>
+                <option selected="@(ViewData["HealthFilter"]?.ToString() == "Recovered")">Recovered</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-taupe flex-grow-1"><i class="bi bi-search"></i> Search</button>
+            <a asp-action="Index" class="btn btn-ghost">Reset</a>
+        </div>
+    </div>
+    <div class="sort-links mt-2 small text-muted">
+        Sort by:
+        <a asp-action="Index" asp-route-sortOrder="">Newest first</a> &middot;
+        <a asp-action="Index" asp-route-sortOrder="name">Name</a> &middot;
+        <a asp-action="Index" asp-route-sortOrder="age">Youngest first</a>
     </div>
 </form>
 
-<p class="text-muted">
-    <i class="bi bi-heart-fill text-danger"></i>
-    Found @Model.Count() animal(s), @Model.Count(a => a.Status == "Available") of them available.
-</p>
-
-<div class="row g-4">
-@{
-    var favoriteIds = ViewBag.FavoriteIds as HashSet<int>;
-}
-@foreach (var item in Model)
-{
-    var badgeClass = item.Status == "Available" ? "badge-available"
-                   : item.Status == "Reserved" ? "badge-reserved"
-                   : "badge-adopted";
-    var isFavorite = favoriteIds != null && favoriteIds.Contains(item.Id);
-
-    <div class="col-md-4 col-sm-6">
-        <div class="card animal-card h-100 shadow-sm">
-            <img src="@(item.PhotoUrl ?? "/images/animals/paw.svg")" alt="@item.Name" class="animal-photo"
-                 onerror="this.onerror=null;this.src='/images/animals/paw.svg';" />
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">@item.Name</h5>
-                    <span class="badge @badgeClass">@item.Status</span>
-                </div>
-                <p class="text-muted mb-1 mt-2">
-                    <i class="bi bi-tag"></i> @item.Species?.Name
-                    @if (!string.IsNullOrEmpty(item.Breed))
-                    {
-                        <span>&middot; @item.Breed</span>
-                    }
-                </p>
-                <p class="mb-3">
-                    <i class="bi bi-balloon"></i> @item.AgeYears yr.
-                    <span class="mx-1">&middot;</span>
-                    <i class="bi bi-gender-ambiguous"></i> @item.Gender
-                    <span class="mx-1">&middot;</span>
-                    <i class="bi bi-heart-pulse"></i> @item.HealthStatus
-                    @if (item.IsSterilized)
-                    {
-                        <span class="mx-1">&middot;</span>
-                        <span class="text-success"><i class="bi bi-patch-check"></i> Sterilized</span>
-                    }
-                </p>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i> Details
-                </a>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
-
-                <form asp-controller="Favorites" asp-action="Toggle" method="post" class="d-inline">
-                    <input type="hidden" name="animalId" value="@item.Id" />
-                    <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
-                    <button type="submit" class="btn @(isFavorite ? "btn-danger" : "btn-outline-danger") btn-sm"
-                            title="@(isFavorite ? "Remove from favourites" : "Add to favourites")">
-                        <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i>
-                    </button>
-                </form>
-                <a asp-controller="AdoptionRequests" asp-action="Create" asp-route-animalId="@item.Id"
-                   class="btn btn-outline-success btn-sm" title="Submit an application">
-                    <i class="bi bi-file-earmark-text"></i> Apply
-                </a>
-            </div>
-        </div>
+<div class="panel p-0">
+    <div class="table-responsive">
+        <table class="table table-modern align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Species</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Health</th>
+                    <th>Sterilized</th>
+                    <th>Status</th>
+                    <th>Added</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                var badgeClass = item.Status == "Available" ? "badge-available"
+                               : item.Status == "Reserved" ? "badge-reserved"
+                               : "badge-adopted";
+                <tr>
+                    <td>
+                        <img src="@(item.PhotoUrl ?? "/images/animals/paw.svg")" alt="" class="table-thumb"
+                             onerror="this.onerror=null;this.src='/images/animals/paw.svg';" />
+                    </td>
+                    <td>
+                        <span class="fw-bold">@item.Name</span>
+                        @if (!string.IsNullOrEmpty(item.Breed))
+                        {
+                            <div class="text-muted small">@item.Breed</div>
+                        }
+                    </td>
+                    <td>@item.Species?.Name</td>
+                    <td>@item.AgeYears yr.</td>
+                    <td>@item.Gender</td>
+                    <td>@item.HealthStatus</td>
+                    <td class="text-center">
+                        @if (item.IsSterilized)
+                        {
+                            <i class="bi bi-check-circle-fill text-taupe" title="Sterilized"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-dash-circle text-muted" title="Not sterilized"></i>
+                        }
+                    </td>
+                    <td><span class="badge badge-soft @badgeClass">@item.Status</span></td>
+                    <td class="text-muted small">@item.CreatedAt.ToString("dd.MM.yyyy")</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-ghost btn-sm" title="Details">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-ghost btn-sm" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-soft-danger btn-sm" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
     </div>
-}
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p class="mt-2 mb-0">No animals found for the current filters.</p>
+        </div>
+    }
 </div>

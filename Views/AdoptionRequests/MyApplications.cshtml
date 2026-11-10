@@ -1,0 +1,83 @@
+@model IEnumerable<AnimalSanctuary.Models.AdoptionRequest>
+@{
+    var user = (AnimalSanctuary.Models.ApplicationUser)ViewBag.User;
+    ViewData["Title"] = "My Applications";
+}
+
+<div class="page-head mt-4">
+    <div class="page-icon"><i class="bi bi-file-earmark-text"></i></div>
+    <div>
+        <h1>My Applications</h1>
+        <p class="page-subtitle">Track the status of your submitted applications</p>
+    </div>
+    <div class="page-actions">
+        <a href="/#catalog" class="btn btn-taupe"><i class="bi bi-search-heart me-1"></i> Find a Friend</a>
+    </div>
+</div>
+
+<div class="panel mb-4">
+    <div class="d-flex flex-wrap align-items-center gap-4">
+        <div class="page-icon" style="width:54px;height:54px;font-size:1.6rem;">
+            <i class="bi bi-person-circle"></i>
+        </div>
+        <div>
+            <h5 class="mb-0">@user.FirstName @user.LastName</h5>
+            <p class="text-muted small mb-0">
+                <i class="bi bi-envelope me-1"></i>@user.Email
+                <span class="mx-1">&middot;</span>
+                <i class="bi bi-telephone me-1"></i>@(string.IsNullOrEmpty(user.PhoneNumber) ? "-" : user.PhoneNumber)
+            </p>
+        </div>
+        <div class="ms-auto text-md-end">
+            <span class="text-muted small d-block">Registered on</span>
+            <span class="fw-bold small">@user.RegistrationDate.ToString("dd.MM.yyyy")</span>
+        </div>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="panel p-0">
+        <div class="table-responsive">
+            <table class="table table-modern align-middle">
+                <thead>
+                    <tr>
+                        <th>Animal</th>
+                        <th>Request type</th>
+                        <th>Visit date</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Manager feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    var badgeClass = item.Status == "Pending" ? "badge-pending"
+                                   : item.Status == "Approved" ? "badge-approved"
+                                   : "badge-rejected";
+                    <tr>
+                        <td>
+                            <span class="fw-bold">@item.Animal?.Name</span>
+                            <div class="text-muted small">@item.Animal?.Species?.Name</div>
+                        </td>
+                        <td>@(item.RequestType == "Adoption" ? "Adoption" : "Visit / Walk")</td>
+                        <td>@item.PreferredVisitDate.ToString("dd.MM.yyyy")</td>
+                        <td class="text-muted small">@item.CreatedAt.ToString("dd.MM.yyyy")</td>
+                        <td><span class="badge badge-soft @badgeClass">@item.Status</span></td>
+                        <td class="small">@(string.IsNullOrEmpty(item.ManagerComment) ? "-" : item.ManagerComment)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel empty-state">
+        <i class="bi bi-file-earmark"></i>
+        <p class="mt-2 mb-2">You have not submitted any applications yet.</p>
+        <a href="/#catalog" class="btn btn-taupe">Browse the Catalog</a>
+    </div>
+}

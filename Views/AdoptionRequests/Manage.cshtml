@@ -1,0 +1,130 @@
+@model IEnumerable<AnimalSanctuary.Models.AdoptionRequest>
+@{
+    ViewData["Title"] = "Applications";
+    string currentFilter = ViewData["StatusFilter"]?.ToString() ?? "";
+}
+
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-inbox"></i></div>
+    <div>
+        <h1>Applications</h1>
+        <p class="page-subtitle">
+            Incoming adoption and visit requests from users
+            @if (ViewBag.PendingCount > 0)
+            {
+                <span class="badge badge-soft badge-pending ms-1">@ViewBag.PendingCount pending</span>
+            }
+        </p>
+    </div>
+</div>
+
+<div class="mb-3 d-flex gap-2">
+    <a asp-action="Manage" class="btn btn-sm @(currentFilter == "" ? "btn-taupe" : "btn-ghost")">All</a>
+    <a asp-action="Manage" asp-route-statusFilter="Pending" class="btn btn-sm @(currentFilter == "Pending" ? "btn-taupe" : "btn-ghost")">Pending</a>
+    <a asp-action="Manage" asp-route-statusFilter="Approved" class="btn btn-sm @(currentFilter == "Approved" ? "btn-taupe" : "btn-ghost")">Approved</a>
+    <a asp-action="Manage" asp-route-statusFilter="Rejected" class="btn btn-sm @(currentFilter == "Rejected" ? "btn-taupe" : "btn-ghost")">Rejected</a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="panel p-0">
+        <div class="table-responsive">
+            <table class="table table-modern align-middle">
+                <thead>
+                    <tr>
+                        <th>Submitted</th>
+                        <th>Applicant</th>
+                        <th>Animal</th>
+                        <th>Type</th>
+                        <th>Housing</th>
+                        <th>Visit date</th>
+                        <th>Status</th>
+                        <th class="text-end">Process</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    var badgeClass = item.Status == "Pending" ? "badge-pending"
+                                   : item.Status == "Approved" ? "badge-approved"
+                                   : "badge-rejected";
+                    <tr>
+                        <td class="text-muted small">@item.CreatedAt.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <span class="fw-bold">@item.User?.FirstName @item.User?.LastName</span>
+                            <div class="text-muted small">@item.User?.Email</div>
+                            <div class="text-muted small">@item.PhoneNumber</div>
+                        </td>
+                        <td>
+                            <a asp-controller="Animals" asp-action="Details" asp-route-id="@item.AnimalId" class="fw-bold text-decoration-none">
+                                @item.Animal?.Name
+                            </a>
+                            <div class="text-muted small">@item.Animal?.Species?.Name</div>
+                        </td>
+                        <td>@(item.RequestType == "Adoption" ? "Adoption" : "Visit")</td>
+                        <td>
+                            @item.HousingType
+                            <div class="text-muted small">@(item.HasOtherPets ? "has other pets" : "no other pets")</div>
+                        </td>
+                        <td>@item.PreferredVisitDate.ToString("dd.MM.yyyy")</td>
+                        <td><span class="badge badge-soft @badgeClass">@item.Status</span></td>
+                        <td class="text-end">
+                            @if (item.Status == "Pending")
+                            {
+                                <details class="process-details">
+                                    <summary class="btn btn-ghost btn-sm d-inline-flex">Review</summary>
+                                    <form asp-action="UpdateStatus" class="mt-2 text-start panel p-3" style="min-width:280px;">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <div class="mb-2">
+                                            <label class="form-label small">Manager comment</label>
+                                            <input type="text" name="managerComment" class="form-control form-control-sm"
+                                                   placeholder="Optional feedback for the user" />
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" name="decision" value="Approved" class="btn btn-sage btn-sm flex-grow-1">
+                                                <i class="bi bi-check2 me-1"></i> Approve
+                                            </button>
+                                            <button type="submit" name="decision" value="Rejected" class="btn btn-soft-danger btn-sm flex-grow-1">
+                                                <i class="bi bi-x-lg me-1"></i> Reject
+                                            </button>
+                                        </div>
+                                    </form>
+                                </details>
+                            }
+                            else if (!string.IsNullOrEmpty(item.ManagerComment))
+                            {
+                                <span class="text-muted small" title="@item.ManagerComment">
+                                    <i class="bi bi-chat-left-text me-1"></i>comment
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(item.ApplicantComment))
+                    {
+                        <tr>
+                            <td></td>
+                            <td colspan="7" class="small text-muted" style="padding-top:0;">
+                                <i class="bi bi-chat-left-dots me-1"></i> "@item.ApplicantComment"
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel empty-state">
+        <i class="bi bi-inbox"></i>
+        <p class="mt-2 mb-0">No applications found for this filter.</p>
+    </div>
+}
+
+<style>
+    details.process-details { position: relative; display: inline-block; }
+    details.process-details summary { list-style: none; cursor: pointer; }
+    details.process-details summary::-webkit-details-marker { display: none; }
+    details.process-details[open] form { position: absolute; right: 0; z-index: 10; box-shadow: 0 12px 26px rgba(43,39,35,0.16); }
+</style>

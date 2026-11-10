@@ -1,26 +1,52 @@
 @model AnimalSanctuary.Models.Species
 @{
     ViewData["Title"] = "Delete Species";
+    var counts = (Dictionary<int, int>)ViewBag.AnimalCounts;
+    counts.TryGetValue(Model.Id, out int animalCount);
 }
 
-<h1>Delete Species</h1>
-<h3>Are you sure you want to delete this species?</h3>
-<div>
-    <h4>Species</h4>
-    <hr />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
+<div class="page-head">
+    <div class="page-icon"><i class="bi bi-trash"></i></div>
+    <div>
+        <h1>Delete Species</h1>
+        <p class="page-subtitle">Are you sure you want to delete "@Model.Name"?</p>
+    </div>
+    <div class="page-actions">
+        <a asp-action="Index" class="btn btn-ghost"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
+    </div>
+</div>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </form>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel">
+            @if (animalCount > 0)
+            {
+                <div class="alert alert-warning d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    This species still has @animalCount animal(s) in the catalog - deletion will be refused.
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i> This action cannot be undone.
+                </div>
+            }
+
+            <dl class="row details-dl mb-4">
+                <dt class="col-sm-4">Species name</dt>
+                <dd class="col-sm-8"><span class="fw-bold">@Model.Name</span></dd>
+                <dt class="col-sm-4">Animals</dt>
+                <dd class="col-sm-8">@animalCount animal(s)</dd>
+            </dl>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-soft-danger px-4"><i class="bi bi-trash me-1"></i> Delete</button>
+                    <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
